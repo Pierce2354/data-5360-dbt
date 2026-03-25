@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: ecoessentials_transactional
+    database: piercehendrickson
+    schema: ecoessentials_transactional_db
+    tables:
+      - name: customer
+      - name: order
+        identifier: '"ORDER"'
+      - name: order_line
+      - name: product
+      - name: promotional_campaign
+
+  - name: ecoessentials_s3
+    database: piercehendrickson
+    schema: ecoessentials_s3
+    tables:
+      - name: marketingemails
