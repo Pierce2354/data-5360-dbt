@@ -7,19 +7,46 @@ models:
     description: "Customer dimension combining transactional database and marketing email subscriber data."
   - name: dim_product_eco
     description: "Product dimension from the transactional database. Price excluded as it belongs in fact tables."
+    columns:
+      - name: product_key
+        tests:
+          - unique
   - name: dim_campaign_eco
     description: "Conformed campaign dimension combining promotional campaigns from the transactional database and email campaigns from S3."
   - name: dim_email_eco
     description: "Email dimension containing unique emails sent via Salesforce Marketing Cloud."
   - name: dim_event_eco
     description: "Event type dimension for marketing email events."
+    columns:
+      - name: event_type
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - "SENT"
+                  - "OPEN"
+                  - "CLICK"
   - name: dim_date_eco
     description: "Date dimension spanning 1990 to 2050."
+  - name: dim_time_eco
+    description: "Time dimension derived from marketing email event timestamps."
   - name: fact_sales_eco
     description: |
       Sales fact table. The grain of this table is one row per order line item.
       Contains keys to dim_customer_eco, dim_product_eco, dim_campaign_eco, and dim_date_eco.
+    columns:
+      - name: customer_key
+        description: "A foreign key to the customer dimension"
+        tests:
+          - not_null
   - name: fact_email_event_eco
     description: |
       Email event fact table. The grain of this table is one row per email event per subscriber.
       Contains keys to dim_customer_eco, dim_campaign_eco, dim_email_eco, dim_event_eco, and dim_date_eco.
+    columns:
+      - name: time_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_time_eco')
+                field: time_key

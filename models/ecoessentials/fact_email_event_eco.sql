@@ -9,6 +9,7 @@ select
     e.email_key,
     ev.event_key,
     d.date_key,
+    t.time_key,
     m.subscriberid
 from {{ ref('stg_marketingemails') }} m
 inner join {{ ref('dim_customer_eco') }} c
@@ -21,3 +22,5 @@ inner join {{ ref('dim_event_eco') }} ev
     on m.eventtype = ev.event_type
 inner join {{ ref('dim_date_eco') }} d
     on d.date_key = cast(m.eventtimestamp as date)
+inner join {{ ref('dim_time_eco') }} t
+    on t.time_of_day = cast(m.eventtimestamp as time)
